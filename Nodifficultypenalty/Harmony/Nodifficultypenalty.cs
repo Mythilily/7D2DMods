@@ -1,4 +1,4 @@
-//Harmony Patch: Disables vehicles with an engine during blood moon.
+//Harmony Patch: No damage reduction at higher difficulties
 //Author: Mythix(dino)
 using Harmony;
 using System;
