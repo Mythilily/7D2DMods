@@ -23,7 +23,16 @@ public class NovehicleBM : IHarmony
         {
             bool isBloodMoon = SkyManager.BloodMoon();
             if (isBloodMoon)
+            {
+                foreach (EntityPlayerLocal entityplayer in GameManager.Instance.World.Players.list)
+                {
+                    if (entityplayer.AttachedToEntity)
+                    {
+                        GameManager.ShowTooltip(entityplayer, Localization.Get("BMEngineWarning"));
+                    }
+                }
                 return true;
+            }
         }
         return __result;
     }
