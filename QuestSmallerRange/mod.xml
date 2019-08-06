@@ -1,0 +1,8 @@
+<mod>
+ <info>
+   <author>Mythix</author>
+   <name>QuestSmallerRange</name>
+   <description>Halves the range of RandomPOIGoto</description>
+   <mod_version>1.0</mod_version>
+ </info>
+</mod>
