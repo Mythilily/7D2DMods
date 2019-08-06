@@ -1,0 +1,11 @@
+<mod>
+  <info>
+    <author>mythix</author>
+    <name>ClearZombiesBM</name>
+    <description>Removes all enemies before the bloodmoon starts</description>
+    <mod_version>1.0</mod_version>
+    <game_version>17</game_version>
+    <launcher_version>
+    </launcher_version>
+  </info>
+</mod>
