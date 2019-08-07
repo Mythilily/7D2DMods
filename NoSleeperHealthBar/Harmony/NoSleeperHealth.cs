@@ -20,6 +20,7 @@ public class NoSleeperHealth : IHarmony
     {
         foreach (Entity entity in GameManager.Instance.World.Entities.list)
         {
+            EntityAlive entity1 = entity as EntityAlive;
             EntityAlive entityAlive = null;
             WorldRayHitInfo hitInfo = __instance.xui.playerUI.entityPlayer.HitInfo;
             if (hitInfo.bHitValid && hitInfo.transform && hitInfo.tag.StartsWith("E_"))
@@ -28,6 +29,10 @@ public class NoSleeperHealth : IHarmony
                 if ((hitRootTransform = GameUtils.GetHitRootTransform(hitInfo.tag, hitInfo.transform)) != null)
                 {
                     entityAlive = hitRootTransform.GetComponent<EntityAlive>();
+                }
+                bool flag = entityAlive != null && entityAlive.IsAlive();
+                if (flag)
+                {
                     if (entityAlive.IsSleeping)
                     {
                         //__instance.ViewComponent.IsVisible = false;
