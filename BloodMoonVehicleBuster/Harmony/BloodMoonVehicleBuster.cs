@@ -28,8 +28,7 @@ public class NovehicleBM : IHarmony
                 {
                     if (entityplayer.AttachedToEntity)
                     {
-                        EntityPlayerLocal entityPlayerLocal = entityplayer as EntityPlayerLocal;
-                        GameManager.ShowTooltip(entityPlayerLocal, Localization.Get("BMEngineWarning"));
+                        GameManager.ShowTooltip(entityplayer.GetAttachedPlayerLocal(), Localization.Get("BMEngineWarning"));
                     }
                 }
                 return true;
