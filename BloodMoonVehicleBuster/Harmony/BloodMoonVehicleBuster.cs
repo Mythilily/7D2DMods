@@ -24,10 +24,13 @@ public class NovehicleBM : IHarmony
             bool isBloodMoon = SkyManager.BloodMoon();
             if (isBloodMoon)
             {
+                Debug.Log("Attempting global entity scan");
                 foreach (EntityPlayer entityplayer in GameManager.Instance.World.Players.list)
                 {
+                    Debug.Log("Searching for mounted players");
                     if (entityplayer.AttachedToEntity)
                     {
+                        Debug.Log("Applying tooltip");
                         GameManager.ShowTooltip(entityplayer.GetAttachedPlayerLocal(), Localization.Get("BMEngineWarning"));
                     }
                 }
