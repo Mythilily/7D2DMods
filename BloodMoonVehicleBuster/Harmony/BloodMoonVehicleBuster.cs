@@ -19,23 +19,24 @@ public class NovehicleBM : IHarmony
     }
     static bool Postfix(bool __result, VehiclePart __instance)
     {
-        if (__instance is VPEngine)
+        bool isBloodMoon = SkyManager.BloodMoon();
+        if (__instance is VPEngine && isBloodMoon)
         {
-            bool isBloodMoon = SkyManager.BloodMoon();
-            if (isBloodMoon)
+            try
             {
-                Debug.Log("Attempting global entity scan");
-                foreach (EntityPlayer entityplayer in GameManager.Instance.World.Players.list)
+                foreach (EntityPlayerLocal entityplayer in GameManager.Instance.World.GetLocalPlayers())
                 {
-                    Debug.Log("Searching for mounted players");
-                    if (entityplayer.AttachedToEntity)
+                    if (entityplayer.AttachedToEntity && ((entityplayer.AttachedToEntity.GetType()) != typeof(EntityBicycle)))
                     {
-                        Debug.Log("Applying tooltip");
-                        GameManager.ShowTooltip(entityplayer.GetAttachedPlayerLocal(), Localization.Get("BMEngineWarning"));
+                        GameManager.ShowTooltip(entityplayer, Localization.Get("BMEngineWarning"));
                     }
                 }
-                return true;
             }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("Caught exception: " + ex);
+            }
+            return true;
         }
         return __result;
     }
