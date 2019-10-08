@@ -73,6 +73,34 @@ public class Mythix_QualityPatch
             return list.AsEnumerable();
         }
     }
+    [HarmonyPatch(typeof(QualityInfo))]
+    [HarmonyPatch("GetTierColor")]
+    [HarmonyPatch(new Type[]
+    {
+            typeof(int)
+    })]
+    public class Tiercolor
+    {
+        static bool Prefix(ref int _tier)
+        {
+            _tier = _tier / 10 + 1;
+            return true;
+        }
+    }
+    [HarmonyPatch(typeof(QualityInfo))]
+    [HarmonyPatch("GetQualityColorHex")]
+    [HarmonyPatch(new Type[]
+    {
+            typeof(int)
+    })]
+    public class Qualitycolorhex
+    {
+        static bool Prefix(ref int _quality)
+        {
+            _quality = _quality / 10 + 1;
+            return true;
+        }
+    }
     [HarmonyPatch(typeof(QualityInfo), MethodType.StaticConstructor)]
     public class ModQualityVars
     {
@@ -126,7 +154,7 @@ public class Mythix_QualityPatch
                 if (list[i].opcode == OpCodes.Ldc_R4 && (float)list[i].operand == 6f)
                 {
                     Debug.Log("Patching...");
-                    list[i].operand = 8f;
+                    list[i].operand = 80f;
                     Debug.Log("Patch done");
                     break;
                 }
@@ -146,12 +174,31 @@ public class Mythix_QualityPatch
         static bool prefix(ref string __result, int _quality, bool _useQualityColor = false)
         {
             Debug.Log("Patch 4");
-            if (_quality >= 6)
+            if (_quality != 0)
             {
                 Debug.Log("Patching...");
                 string text = string.Empty;
+                _quality /= 10;
                 switch (_quality)
                 {
+                    case 0:
+                        text = Localization.Get("lblQualityDamaged", string.Empty);
+                        break;
+                    case 1:
+                        text = Localization.Get("lblQualityPoor", string.Empty);
+                        break;
+                    case 2:
+                        text = Localization.Get("lblQualityAverage", string.Empty);
+                        break;
+                    case 3:
+                        text = Localization.Get("lblQualityGreat", string.Empty);
+                        break;
+                    case 4:
+                        text = Localization.Get("lblQualityFlawless", string.Empty);
+                        break;
+                    case 5:
+                        text = Localization.Get("lblQualityLegendary", string.Empty);
+                        break;
                     case 6:
                         text = Localization.Get("lblQualityLegendaryPlus", string.Empty);
                         break;
@@ -167,10 +214,13 @@ public class Mythix_QualityPatch
                     text = string.Format("[{0}]{1}[-]", QualityInfo.GetQualityColorHex(_quality), text);
                     __result = text;
                     Debug.Log("Patch done");
-                    return false;
                 }
             }
-            return true;
+            else
+            {
+                __result = Localization.Get("lblQualityBroken", string.Empty);
+            }
+            return false;
         }
     }
 }
