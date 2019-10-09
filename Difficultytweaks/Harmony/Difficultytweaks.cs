@@ -51,10 +51,14 @@ public class Mythix_difficultytweaks
         [HarmonyPatch("ProcessDamageResponseLocal")]
         class NoZombieRage
         {
-            static bool Prefix(EntityZombie __instance, DamageResponse _dmResponse)
+            static void Postfix(EntityZombie __instance, ref float ___moveSpeedBoostPer)
             {
-                __instance.ProcessDamageResponseLocal(_dmResponse);
-                return false;
+                bool nullifyrage = false;
+                EntityClass entityClass = EntityClass.list[__instance.entityClass];
+                bool.TryParse(entityClass.Properties.Values["Ragemode"], out nullifyrage);
+                if (nullifyrage || __instance.Buffs.HasBuff("buffRageMode"))
+                    return;
+                ___moveSpeedBoostPer = 0f;
             }
         }
     }
