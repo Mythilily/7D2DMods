@@ -26,8 +26,9 @@ public class ClearZombiesDawn : IHarmony
             {
                 EntityAlive entityalive = GameManager.Instance.World.Entities.list[i] as EntityAlive;
                 Entity entity = GameManager.Instance.World.Entities.list[i] as Entity;
-                if (entity.GetSpawnerSource() == EnumSpawnerSource.Biome && (entityalive is EntityZombie || entityalive is EntityEnemyAnimal))
+                if (entity.GetSpawnerSource() == EnumSpawnerSource.Biome && entityalive.GetMaxHealth() == entityalive.Health && (entityalive is EntityZombie || entityalive is EntityEnemyAnimal))
                 {
+                    
                     entityalive.IsDespawned = true;
                     entityalive.MarkToUnload();
                 }

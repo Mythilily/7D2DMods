@@ -41,6 +41,7 @@ public class Mythix_QualityPatch
         public void Start()
         {
             Debug.Log(" Loading Patch: " + GetType().ToString());
+            Debug.LogWarning("Qualitypatch intended for Darkness Falls mod.\nAll 9 patches have to pass (except patch 4) otherwise it likely won't work properly");
             var harmony = HarmonyInstance.Create(GetType().ToString());
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
@@ -59,7 +60,10 @@ public class Mythix_QualityPatch
             {
                 if (list[i].opcode == OpCodes.Ldc_I4_7 && count < 2)
                 {
-                    Debug.Log("Patching...");
+                    if (count == 0)
+                    {
+                        Debug.Log("Patching...");
+                    }
                     list[i].opcode = OpCodes.Ldc_I4_S;
                     list[i].operand = (short)9;
                     count++;
@@ -83,7 +87,10 @@ public class Mythix_QualityPatch
     {
         static bool Prefix(ref int _tier)
         {
-            _tier = _tier / 10 + 1;
+            if (_tier > 0)
+            {
+                _tier = (int)Math.Ceiling(_tier / 10m);
+            }
             return true;
         }
     }
@@ -97,7 +104,10 @@ public class Mythix_QualityPatch
     {
         static bool Prefix(ref int _quality)
         {
-            _quality = _quality / 10 + 1;
+            if (_quality > 0)
+            {
+                _quality = (int)Math.Ceiling(_quality / 10m);
+            }
             return true;
         }
     }
@@ -115,7 +125,10 @@ public class Mythix_QualityPatch
             {
                 if (list[i].opcode == OpCodes.Ldc_I4_7 && count < 2)
                 {
-                    Debug.Log("Patching...");
+                    if (count == 0)
+                    {
+                        Debug.Log("Patching...");
+                    }
                     list[i].opcode = OpCodes.Ldc_I4_S;
                     list[i].operand = (short)9;
                     count++;
@@ -151,7 +164,7 @@ public class Mythix_QualityPatch
 
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].opcode == OpCodes.Ldc_R4 && (float)list[i].operand == 6f)
+                if (list[i].opcode == OpCodes.Ldc_R4 && (float)list[i].operand == 8)
                 {
                     Debug.Log("Patching...");
                     list[i].operand = 80f;
@@ -164,14 +177,9 @@ public class Mythix_QualityPatch
     }
     [HarmonyPatch(typeof(QualityInfo))]
     [HarmonyPatch("GetQualityLevelName")]
-    [HarmonyPatch(new Type[]
-        {
-            typeof(int),
-            typeof(bool)
-        })]
-    public class ModQualityLoc
+    public class Qualityname
     {
-        static bool prefix(ref string __result, int _quality, bool _useQualityColor = false)
+        static bool prefix(ref string __result, ref int _quality, ref bool _useQualityColor)
         {
             Debug.Log("Patch 4");
             if (_quality != 0)
@@ -221,6 +229,122 @@ public class Mythix_QualityPatch
                 __result = Localization.Get("lblQualityBroken", string.Empty);
             }
             return false;
+        }
+    }
+    [HarmonyPatch(typeof(EntityNPC))]
+    [HarmonyPatch("SetupStartingItems")]
+    public class Startingitemsquality
+    {
+        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        {
+            Debug.Log("Patch 5");
+            var list = new List<CodeInstruction>(instructions);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].opcode == OpCodes.Ldc_I4_6)
+                {
+                    Debug.Log("Patching...");
+                    list[i].opcode = OpCodes.Ldc_I4_2;
+                    Debug.Log("Patch done");
+                    break;
+                }
+            }
+            return list.AsEnumerable();
+        }
+    }
+    [HarmonyPatch(typeof(TraderInfo))]
+    [HarmonyPatch("SpawnItem")]
+    public class TraderSpawnItem
+    {
+        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        {
+            Debug.Log("Patch 6");
+            var list = new List<CodeInstruction>(instructions);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (i >= 130 && i <= 135 && list[i].opcode == OpCodes.Ldc_I4_6)
+                {
+                    Debug.Log("Patching...");
+                    list[i].opcode = OpCodes.Ldc_I4_S;
+                    list[i].operand = (short)60;
+                    Debug.Log("Patch done");
+                    break;
+                }
+            }
+            return list.AsEnumerable();
+        }
+    }
+    [HarmonyPatch(typeof(XUiM_Trader))]
+    [HarmonyPatch("GetBuyPrice")]
+    public class Traderbuyprice
+    {
+        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        {
+            Debug.Log("Patch 7");
+            var list = new List<CodeInstruction>(instructions);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].opcode == OpCodes.Ldc_R4 && (float)list[i].operand == 5)
+                {
+                    Debug.Log("Patching...");
+                    list[i].operand = 60f;
+                    Debug.Log("Patch done");
+                    break;
+                }
+            }
+            return list.AsEnumerable();
+        }
+    }
+    [HarmonyPatch(typeof(XUiM_Trader))]
+    [HarmonyPatch("GetSellPrice")]
+    public class Tradersellprice
+    {
+        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        {
+            Debug.Log("Patch 8");
+            var list = new List<CodeInstruction>(instructions);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].opcode == OpCodes.Ldc_R4 && (float)list[i].operand == 5)
+                {
+                    Debug.Log("Patching...");
+                    list[i].operand = 60f;
+                    Debug.Log("Patch done");
+                    break;
+                }
+            }
+            return list.AsEnumerable();
+        }
+    }
+    [HarmonyPatch(typeof(ItemValue), MethodType.Constructor)]
+    [HarmonyPatch("ItemValue")]
+    [HarmonyPatch(new Type[]
+    {
+            typeof(int),
+            typeof(bool)
+    })]
+    public class Itemvaluequality
+    {
+        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        {
+            Debug.Log("Patch 9");
+            var list = new List<CodeInstruction>(instructions);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].opcode == OpCodes.Ldc_I4_6)
+                {
+                    Debug.Log("Patching...");
+                    list[i].opcode = OpCodes.Ldc_I4_S;
+                    list[i].operand = (short)80;
+                    break;
+                }
+            }
+            return list.AsEnumerable();
         }
     }
 }
