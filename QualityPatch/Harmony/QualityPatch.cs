@@ -164,7 +164,7 @@ public class Mythix_QualityPatch
 
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].opcode == OpCodes.Ldc_R4 && (float)list[i].operand == 8)
+                if (list[i].opcode == OpCodes.Ldc_R4 && (float)list[i].operand == 6)
                 {
                     Debug.Log("Patching...");
                     list[i].operand = 80f;
