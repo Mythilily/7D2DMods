@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+	<ModInfo>
+		<Name value="DisableDawnCleanup" />
+		<Description value="Disables b149 feral zombie despawn at dawn" />
+		<Author value="mythix" />
+		<Version value="1.0" />
+		<Website value="" />
+	</ModInfo>
+</xml>
