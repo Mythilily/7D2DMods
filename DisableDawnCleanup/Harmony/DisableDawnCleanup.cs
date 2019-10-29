@@ -21,7 +21,7 @@ public class Mythix_Disabledawncleanup
         [HarmonyPatch("OnAddedToWorld")]
         class disablecleanup
         {
-            static void postfix(EntityZombie __instance)
+            static void Postfix(EntityZombie __instance)
             {
                 __instance.timeToDie = __instance.world.worldTime + 1800UL + (ulong)(22000f * __instance.rand.RandomFloat);
             }
