@@ -1,11 +1,12 @@
-using DMT;
-using Harmony;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
+using DMT;
+using HarmonyLib;
 
 //[HarmonyPatch(typeof(ConsoleCmdGetTime))]
 //[HarmonyPatch("Execute")]
@@ -42,14 +43,15 @@ public class Mythix_QualityPatch
         {
             Debug.Log(" Loading Patch: " + GetType().ToString());
             Debug.LogWarning("Qualitypatch intended for Darkness Falls mod.\nAll 9 patches have to pass (except patch 4) otherwise it likely won't work properly");
-            var harmony = HarmonyInstance.Create(GetType().ToString());
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            var harmony = new Harmony("qualitypatch");
+            harmony.PatchAll();
         }
     }
     [HarmonyPatch(typeof(QualityInfo))]
     [HarmonyPatch("Cleanup")]
     public class ModQuality
     {
+
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             Debug.Log("Patch 1");
@@ -65,7 +67,7 @@ public class Mythix_QualityPatch
                         Debug.Log("Patching...");
                     }
                     list[i].opcode = OpCodes.Ldc_I4_S;
-                    list[i].operand = (short)9;
+                    list[i].operand = 9;
                     count++;
                 }
                 else if (count >= 2)
@@ -115,7 +117,7 @@ public class Mythix_QualityPatch
     public class ModQualityVars
     {
 
-        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             Debug.Log("Patch 2");
             var list = new List<CodeInstruction>(instructions);
@@ -130,7 +132,7 @@ public class Mythix_QualityPatch
                         Debug.Log("Patching...");
                     }
                     list[i].opcode = OpCodes.Ldc_I4_S;
-                    list[i].operand = (short)9;
+                    list[i].operand = 9;
                     count++;
                 }
                 else if (count >= 2)
@@ -179,7 +181,7 @@ public class Mythix_QualityPatch
     [HarmonyPatch("GetQualityLevelName")]
     public class Qualityname
     {
-        static bool prefix(ref string __result, ref int _quality, ref bool _useQualityColor)
+        static bool Prefix(ref string __result, ref int _quality, ref bool _useQualityColor)
         {
             Debug.Log("Patch 4");
             if (_quality != 0)
@@ -190,31 +192,31 @@ public class Mythix_QualityPatch
                 switch (_quality)
                 {
                     case 0:
-                        text = Localization.Get("lblQualityDamaged", string.Empty);
+                        text = Localization.Get("lblQualityDamaged");
                         break;
                     case 1:
-                        text = Localization.Get("lblQualityPoor", string.Empty);
+                        text = Localization.Get("lblQualityPoor");
                         break;
                     case 2:
-                        text = Localization.Get("lblQualityAverage", string.Empty);
+                        text = Localization.Get("lblQualityAverage");
                         break;
                     case 3:
-                        text = Localization.Get("lblQualityGreat", string.Empty);
+                        text = Localization.Get("lblQualityGreat");
                         break;
                     case 4:
-                        text = Localization.Get("lblQualityFlawless", string.Empty);
+                        text = Localization.Get("lblQualityFlawless");
                         break;
                     case 5:
-                        text = Localization.Get("lblQualityLegendary", string.Empty);
+                        text = Localization.Get("lblQualityLegendary");
                         break;
                     case 6:
-                        text = Localization.Get("lblQualityLegendaryPlus", string.Empty);
+                        text = Localization.Get("lblQualityLegendaryPlus");
                         break;
                     case 7:
-                        text = Localization.Get("lblQualityRelic", string.Empty);
+                        text = Localization.Get("lblQualityRelic");
                         break;
                     case 8:
-                        text = Localization.Get("lblQualityDemonic", string.Empty);
+                        text = Localization.Get("lblQualityDemonic");
                         break;
                 }
                 if (_useQualityColor)
@@ -226,7 +228,7 @@ public class Mythix_QualityPatch
             }
             else
             {
-                __result = Localization.Get("lblQualityBroken", string.Empty);
+                __result = Localization.Get("lblQualityBroken");
             }
             return false;
         }
@@ -235,7 +237,7 @@ public class Mythix_QualityPatch
     [HarmonyPatch("SetupStartingItems")]
     public class Startingitemsquality
     {
-        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             Debug.Log("Patch 5");
             var list = new List<CodeInstruction>(instructions);
@@ -257,18 +259,18 @@ public class Mythix_QualityPatch
     [HarmonyPatch("SpawnItem")]
     public class TraderSpawnItem
     {
-        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             Debug.Log("Patch 6");
             var list = new List<CodeInstruction>(instructions);
 
             for (int i = 0; i < list.Count; i++)
             {
-                if (i >= 130 && i <= 135 && list[i].opcode == OpCodes.Ldc_I4_6)
+                if (i == 133 && list[i].opcode == OpCodes.Ldc_I4_6)
                 {
                     Debug.Log("Patching...");
                     list[i].opcode = OpCodes.Ldc_I4_S;
-                    list[i].operand = (short)60;
+                    list[i].operand = 60;
                     Debug.Log("Patch done");
                     break;
                 }
@@ -280,7 +282,7 @@ public class Mythix_QualityPatch
     [HarmonyPatch("GetBuyPrice")]
     public class Traderbuyprice
     {
-        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             Debug.Log("Patch 7");
             var list = new List<CodeInstruction>(instructions);
@@ -302,7 +304,7 @@ public class Mythix_QualityPatch
     [HarmonyPatch("GetSellPrice")]
     public class Tradersellprice
     {
-        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             Debug.Log("Patch 8");
             var list = new List<CodeInstruction>(instructions);
@@ -329,7 +331,7 @@ public class Mythix_QualityPatch
     })]
     public class Itemvaluequality
     {
-        static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             Debug.Log("Patch 9");
             var list = new List<CodeInstruction>(instructions);
@@ -340,7 +342,8 @@ public class Mythix_QualityPatch
                 {
                     Debug.Log("Patching...");
                     list[i].opcode = OpCodes.Ldc_I4_S;
-                    list[i].operand = (short)80;
+                    list[i].operand = 80;
+                    Debug.Log("Patch done");
                     break;
                 }
             }
