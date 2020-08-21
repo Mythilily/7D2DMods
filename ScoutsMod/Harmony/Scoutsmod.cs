@@ -18,7 +18,9 @@ class mythixscoutsmod
         public void Start()
         {
             Log.Out("Pre-initiliazing configuration values");
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "Mods\\ScoutsMod\\Config\\Scouthorde.txt");
+
+            Log.Out(Directory.GetCurrentDirectory());
+            var path = Path.Combine(Directory.GetCurrentDirectory(), $"Mods{Path.DirectorySeparatorChar}ScoutsMod{Path.DirectorySeparatorChar}Config{Path.DirectorySeparatorChar}Scouthorde.txt");
             using (var fileStream = File.OpenRead(path))
             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, buffersize))
             {
