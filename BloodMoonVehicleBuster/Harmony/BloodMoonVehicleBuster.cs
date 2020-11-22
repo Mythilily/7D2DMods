@@ -1,43 +1,60 @@
 //Harmony Patch: Disables vehicles with an engine during blood moon.
 //Author: Mythix(dino)
-using Harmony;
+using HarmonyLib;
 using System;
 using System.Reflection;
 using UnityEngine;
 using DMT;
 
-[HarmonyPatch(typeof(VehiclePart))]
-[HarmonyPatch("IsBroken")]
-
-public class NovehicleBM : IHarmony
+public class Mythix_NovehicleBM
 {
-    public void Start()
+    public class Mythix_NovehicleBM_Init : IHarmony
     {
-        Debug.Log(" Loading Patch: " + GetType().ToString());
-        var harmony = HarmonyInstance.Create(GetType().ToString());
-        harmony.PatchAll(Assembly.GetExecutingAssembly());
-    }
-    static bool Postfix(bool __result, VehiclePart __instance)
-    {
-        bool isBloodMoon = SkyManager.BloodMoon();
-        if (__instance is VPEngine && isBloodMoon)
+        public void Start()
         {
-            try
+            Debug.Log(" Loading Patch: " + this.GetType().ToString());
+            Harmony harmony = new Harmony("Mythix.NovehicleBM.Patch");
+            harmony.PatchAll();
+        }
+    }
+    [HarmonyPatch(typeof(VehiclePart))]
+    [HarmonyPatch("IsBroken")]
+    public class VehicleDisabler
+    {
+        static bool Postfix(bool __result, VehiclePart __instance)
+        {
+            bool isBloodMoon = SkyManager.BloodMoon();
+            if (__instance is VPEngine && isBloodMoon)
             {
-                foreach (EntityPlayerLocal entityplayer in GameManager.Instance.World.GetLocalPlayers())
+                try
                 {
-                    if (entityplayer.AttachedToEntity && ((entityplayer.AttachedToEntity.GetType()) != typeof(EntityBicycle)))
+                    foreach (EntityPlayerLocal entityplayer in GameManager.Instance.World.GetLocalPlayers())
                     {
-                        GameManager.ShowTooltip(entityplayer, Localization.Get("BMEngineWarning"));
+                        if (entityplayer.AttachedToEntity && ((entityplayer.AttachedToEntity.GetType()) != typeof(EntityBicycle)))
+                        {
+                            GameManager.ShowTooltip(entityplayer, Localization.Get("BMEngineWarning"));
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning("Caught exception: " + ex);
+                }
+                return true;
             }
-            catch (Exception ex)
-            {
-                Debug.LogWarning("Caught exception: " + ex);
-            }
-            return true;
+            return __result;
         }
-        return __result;
     }
+    //[HarmonyPatch(typeof(VehiclePart))]
+    //[HarmonyPatch("IsBroken")]
+    //public class novehicleBM
+    //{
+    //    static bool Prefix(VehiclePart __instance)
+    //    {
+    //        bool isBloodMoon = SkyManager.BloodMoon();
+    //        Log.Warning("Bloodmoon: " + isBloodMoon);
+    //        return true;
+    //    }
+
+    //}
 }
