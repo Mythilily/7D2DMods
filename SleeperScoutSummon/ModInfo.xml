@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <ModInfo>
+    <Name value="SleeperScoutSummon" />
+    <Description value="If sleepers don't die after 3 seconds they summon a scout" />
+    <Author value="mythix" />
+    <Version value="1.0" />
+    <Website value="" />
+  </ModInfo>
+</xml>
