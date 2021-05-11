@@ -4,7 +4,7 @@
     <Name value="SleeperScoutSummon" />
     <Description value="If sleepers don't die after 3 seconds they summon a scout" />
     <Author value="mythix" />
-    <Version value="1.0" />
+    <Version value="1.1" />
     <Website value="" />
   </ModInfo>
 </xml>

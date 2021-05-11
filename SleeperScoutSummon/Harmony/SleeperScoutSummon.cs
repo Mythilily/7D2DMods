@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading;
+using System.Collections;
 
 class mythixsleeperscouts
 {
@@ -24,39 +25,30 @@ class mythixsleeperscouts
 
     [HarmonyPatch(typeof(EAIManager))]
     [HarmonyPatch("SleeperWokeUp")]
-    public static class sleeperscoutsummon
+    public class sleeperscoutsummon
     {
         static bool Prefix(EAIManager __instance, EntityAlive ___entity)
         {
-            Thread CheckThread = new Thread((object EntityID) =>
+            IEnumerator DelayThenRun(int entityId)
             {
-                Thread.Sleep(3000); // wait 3 seconds
+                yield return new WaitForSeconds(3f);
                 var watch = new System.Diagnostics.Stopwatch();
                 watch.Start();
-                int ListCount = GameManager.Instance.World.Entities.list.Count == null ? 0 : (GameManager.Instance.World.Entities.list.Count > 0 ? (GameManager.Instance.World.Entities.list.Count - 1) : 0);
-                for (int i = ListCount; i >= 0; i--)
-                {
-                    Entity CurEntity = GameManager.Instance.World.Entities.list[i];
-                    EntityAlive CurEntityAlive = null;
-                    if (CurEntity is EntityAlive)
-                    {
-                        CurEntityAlive = (EntityAlive)CurEntity;
-                        if (CurEntity.entityId == (int)EntityID)
-                        {
 
-                            if (CurEntityAlive.IsSleeper && !CurEntityAlive.IsDead())
-                            {
-                                Log.Warning("Spawning scout...");
-                                GameManager.Instance.World.aiDirector.GetComponent<AIDirectorChunkEventComponent>().SpawnScouts(CurEntityAlive.position);
-                            }
-                            break;
-                        }
-                    }
+                if (GameManager.Instance.World.Entities.dict.TryGetValue(entityId, out var entity)
+                    && entity != null
+                    && entity is EntityAlive entityAlive
+                    && entityAlive.IsSleeper
+                    && entityAlive.IsAlive())
+                {
+                    Log.Warning("Spawning scout...");
+                    GameManager.Instance.World.aiDirector.GetComponent<AIDirectorChunkEventComponent>().SpawnScouts(entityAlive.position);
                 }
+
                 watch.Stop();
-                Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
-            });
-            CheckThread.Start(___entity.entityId);
+                Log.Out($"Execution Time: {watch.ElapsedMilliseconds} ms");
+            }
+            GameManager.Instance.StartCoroutine(DelayThenRun(___entity.entityId));
             return true;
         }
     }
