@@ -27,28 +27,22 @@ class mythixsleeperscouts
     [HarmonyPatch("SleeperWokeUp")]
     public class sleeperscoutsummon
     {
+        static WaitForSeconds entityWait = new WaitForSeconds(3f);
         static bool Prefix(EAIManager __instance, EntityAlive ___entity)
         {
-            IEnumerator DelayThenRun(int entityId)
+
+            IEnumerator DelayThenRun(EntityAlive entity)
             {
-                yield return new WaitForSeconds(3f);
-                var watch = new System.Diagnostics.Stopwatch();
-                watch.Start();
+                yield return entityWait; //saves allocation/gc
 
-                if (GameManager.Instance.World.Entities.dict.TryGetValue(entityId, out var entity)
-                    && entity != null
-                    && entity is EntityAlive entityAlive
-                    && entityAlive.IsSleeper
-                    && entityAlive.IsAlive())
+                if (entity != null && entity.IsSleeper && entity.IsAlive())
                 {
-                    Log.Warning("Spawning scout...");
-                    GameManager.Instance.World.aiDirector.GetComponent<AIDirectorChunkEventComponent>().SpawnScouts(entityAlive.position);
+                    //Log.Warning("Spawning scout...");
+                    GameManager.Instance.World.aiDirector.GetComponent<AIDirectorChunkEventComponent>() //could cache this
+                        .SpawnScouts(entity.position);
                 }
-
-                watch.Stop();
-                Log.Out($"Execution Time: {watch.ElapsedMilliseconds} ms");
             }
-            GameManager.Instance.StartCoroutine(DelayThenRun(___entity.entityId));
+            GameManager.Instance.StartCoroutine(DelayThenRun(___entity));
             return true;
         }
     }
