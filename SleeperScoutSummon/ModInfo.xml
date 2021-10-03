@@ -2,9 +2,9 @@
 <xml>
   <ModInfo>
     <Name value="SleeperScoutSummon" />
-    <Description value="If sleepers don't die after 3 seconds they summon a scout" />
+    <Description value="If sleepers don't die after 3 seconds (default) they summon a scout" />
     <Author value="mythix" />
-    <Version value="1.1" />
+    <Version value="1.2" />
     <Website value="" />
   </ModInfo>
 </xml>

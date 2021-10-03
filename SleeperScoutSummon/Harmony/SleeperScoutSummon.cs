@@ -10,24 +10,38 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading;
 using System.Collections;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 class mythixsleeperscouts
 {
+    public static IList<Values> values;
     public class sleeperscouts : IHarmony
     {
         public void Start()
         {
-            Log.Warning(" Loading Patch: " + this.GetType().ToString());
+            var path = Path.Combine(Directory.GetCurrentDirectory(), $"Mods{Path.DirectorySeparatorChar}SleeperScoutSummon{Path.DirectorySeparatorChar}Config.json");
+            var jsonText = File.ReadAllText(path);
+
+            values = JsonConvert.DeserializeObject<IList<Values>>(jsonText);
+            Log.Warning($"Scout delay: {values[0].SummonDelayInSeconds.ToString()}");
+
+            Log.Warning(" Loading Patch: " + GetType().ToString());
 			var harmony = new Harmony("sleeperscouts");
 			harmony.PatchAll();
+            
         }
+    }
+    public class Values
+    {
+        public float SummonDelayInSeconds { get; set; }
     }
 
     [HarmonyPatch(typeof(EAIManager))]
     [HarmonyPatch("SleeperWokeUp")]
     public class sleeperscoutsummon
     {
-        static WaitForSeconds entityWait = new WaitForSeconds(3f);
+        static WaitForSeconds entityWait = new WaitForSeconds(values[0].SummonDelayInSeconds);
         static bool Prefix(EAIManager __instance, EntityAlive ___entity)
         {
 
