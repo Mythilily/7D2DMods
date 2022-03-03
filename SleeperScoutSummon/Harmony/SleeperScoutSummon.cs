@@ -1,4 +1,3 @@
-using DMT;
 using HarmonyLib;
 using UnityEngine;
 using System;
@@ -16,7 +15,7 @@ using Newtonsoft.Json.Linq;
 class mythixsleeperscouts
 {
     public static IList<Values> values;
-    public class sleeperscouts : IHarmony
+    public class sleeperscouts : HarmonyPatch
     {
         public void Start()
         {
