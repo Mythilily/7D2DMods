@@ -15,9 +15,9 @@ using Newtonsoft.Json.Linq;
 class mythixsleeperscouts
 {
     public static IList<Values> values;
-    public class sleeperscouts : HarmonyPatch
+    public class sleeperscouts : IModApi
     {
-        public void Start()
+        public void InitMod(Mod _mod)
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), $"Mods{Path.DirectorySeparatorChar}SleeperScoutSummon{Path.DirectorySeparatorChar}Config.json");
             var jsonText = File.ReadAllText(path);
