@@ -1,0 +1,8 @@
+[
+    {
+        "forestWeight" : 7, //Default = 7
+        "desertWeight" : 4, //Default = 4
+        "snowWeight" : 4, //Default = 4
+        "wastelandWeight" : 3 //Default = 3
+    }
+]
