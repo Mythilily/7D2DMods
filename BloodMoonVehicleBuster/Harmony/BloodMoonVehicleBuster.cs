@@ -4,13 +4,12 @@ using HarmonyLib;
 using System;
 using System.Reflection;
 using UnityEngine;
-using DMT;
 
 public class Mythix_NovehicleBM
 {
-    public class Mythix_NovehicleBM_Init : IHarmony
+    public class Mythix_NovehicleBM_Init : IModApi
     {
-        public void Start()
+        public void InitMod(Mod _mod)
         {
             Debug.Log(" Loading Patch: " + this.GetType().ToString());
             Harmony harmony = new Harmony("Mythix.NovehicleBM.Patch");
@@ -19,11 +18,13 @@ public class Mythix_NovehicleBM
     }
     [HarmonyPatch(typeof(VehiclePart))]
     [HarmonyPatch("IsBroken")]
-    public class VehicleDisabler
+    public class novehicleBM
     {
-        static bool Postfix(bool __result, VehiclePart __instance)
+        static void Postfix(ref bool __result, VehiclePart __instance)
         {
-            bool isBloodMoon = SkyManager.BloodMoon();
+            bool isBloodMoon = SkyManager.IsBloodMoonVisible();
+            //bool isBloodMoon = GameManager.Instance.World.aiDirector.BloodMoonComponent.BloodMoonActive;
+            //Log.Out($"Bloodmoon visible? {isBloodMoon}");
             if (__instance is VPEngine && isBloodMoon)
             {
                 try
@@ -40,9 +41,8 @@ public class Mythix_NovehicleBM
                 {
                     Debug.LogWarning("Caught exception: " + ex);
                 }
-                return true;
+                __result = true;
             }
-            return __result;
         }
     }
     //[HarmonyPatch(typeof(VehiclePart))]
