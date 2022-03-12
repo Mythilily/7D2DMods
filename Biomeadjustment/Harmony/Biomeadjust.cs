@@ -26,6 +26,8 @@ class Biomeadjustment
             Log.Warning($"Desert: {values[0].desertWeight.ToString()}");
             Log.Warning($"Snow: {values[0].snowWeight.ToString()}");
             Log.Warning($"Wasteland: {values[0].wastelandWeight.ToString()}");
+            Log.Warning($"Random: {values[0].randomBiomeWeight.ToString()}");
+            Log.Warning($"TileSize: {values[0].worldTileSize.ToString()}");
 
             Log.Warning(" Loading Patch: " + this.GetType().ToString());
 			var harmony = new Harmony("Biomeadj");
@@ -38,6 +40,8 @@ class Biomeadjustment
         public int desertWeight { get; set; }
         public int snowWeight { get; set; }
         public int wastelandWeight { get; set; }
+        public int randomBiomeWeight { get; set; }
+        public int worldTileSize { get; set; }
 
     }
 
@@ -45,20 +49,6 @@ class Biomeadjustment
     [HarmonyPatch("Init")]
     public class biomeadj2
     {
-        //static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        //{
-        //    var list = new List<CodeInstruction>(instructions);
-        //    for (int i = 0; i < list.Count; i++)
-        //    {
-        //        //Log.Out($"i={i} Opcode={list[i].opcode}");
-        //        if (i == 76 && list[i].opcode == OpCodes.Ldc_I4_7)
-        //        {
-        //            list[i].opcode = OpCodes.Ldc_I4_2;
-        //            Log.Out("Decreased forest weight to 2");
-        //        }
-        //    }
-        //    return list.AsEnumerable();
-        //}
         public static bool Prefix()
         {
             WorldBuilder.Instance.ForestBiomeWeight = values[0].forestWeight;
@@ -78,9 +68,32 @@ class Biomeadjustment
             __instance.DesertBiomeWeight = values[0].desertWeight;
             __instance.SnowBiomeWeight = values[0].snowWeight;
             __instance.WastelandBiomeWeight = values[0].wastelandWeight;
+            __instance.RandomBiomeWeight = values[0].randomBiomeWeight;
             Log.Out("Adjusted biome weights");
             return true;
         }
     }
-
+    [HarmonyPatch(typeof(WorldBuilder), MethodType.Constructor)]
+    [HarmonyPatch("WorldBuilder")]
+    [HarmonyPatch(new Type[]
+    {
+            typeof(string),
+            typeof(int)
+    })]
+    public class biomeadj4
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var list = new List<CodeInstruction>(instructions);
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (i == 70 && list[i].opcode == OpCodes.Ldc_I4)
+                {
+                    list[i].operand = values[0].worldTileSize;
+                    Log.Out("Changed worldtilesize");
+                }
+            }
+            return list.AsEnumerable();
+        }
+    }
 }

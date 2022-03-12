@@ -1,8 +1,11 @@
 [
-    {
-        "forestWeight" : 7, //Default = 7
-        "desertWeight" : 4, //Default = 4
-        "snowWeight" : 4, //Default = 4
-        "wastelandWeight" : 3 //Default = 3
-    }
+  {
+    "forestWeight": 7, //Default = 7
+    "desertWeight": 4, //Default = 4
+    "snowWeight": 4, //Default = 4
+    "wastelandWeight": 3, //Default = 3
+    //Changing these might break the game
+    "randomBiomeWeight": 0, //Default = 0
+    "worldTileSize": 1024 //Default = 1024
+  }
 ]
