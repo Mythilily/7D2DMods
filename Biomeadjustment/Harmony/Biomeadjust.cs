@@ -96,4 +96,22 @@ class Biomeadjustment
             return list.AsEnumerable();
         }
     }
+    [HarmonyPatch(typeof(WorldBuilder))]
+    [HarmonyPatch("CreateCountryRoad")]
+    public class biomeadj5
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var list = new List<CodeInstruction>(instructions);
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (i >= 290 && i <= 303)
+                {
+                    list[i].opcode = OpCodes.Nop;
+                    Log.Out($"Changed Index: {i}");
+                }
+            }
+            return list.AsEnumerable();
+        }
+    }
 }

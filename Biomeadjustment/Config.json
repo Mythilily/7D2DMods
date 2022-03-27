@@ -1,5 +1,6 @@
 [
   {
+    //Small numbers work better. 0 disables the biome.
     "forestWeight": 7, //Default = 7
     "desertWeight": 4, //Default = 4
     "snowWeight": 4, //Default = 4
