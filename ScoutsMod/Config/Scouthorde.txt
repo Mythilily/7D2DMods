@@ -1,6 +1,0 @@
-//Config for screamer horde amounts. Random number between min and max.
-//Value 1 = min (def 3)
-//Value 2 = max (def 7)
-//It doesn't matter in what order the values are written. The smallest will be min, the biggest will be max.
-3
-10

@@ -1,100 +1,79 @@
-using DMT;
-using HarmonyLib;
-using UnityEngine;
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using HarmonyLib;
+using UnityEngine;
 
-class mythixscoutsmod
+class mythixscoutsmod : IModApi
 {
-    static int[] values = new int[2] { 3, 7 };
-    public class scoutsmod : IHarmony
+    public void InitMod(Mod _modInstance)
     {
-        const Int32 buffersize = 256;
-        public void Start()
-        {
-            Log.Out("Pre-initiliazing configuration values");
-
-            Log.Out(Directory.GetCurrentDirectory());
-            var path = Path.Combine(Directory.GetCurrentDirectory(), $"Mods{Path.DirectorySeparatorChar}ScoutsMod{Path.DirectorySeparatorChar}Config{Path.DirectorySeparatorChar}Scouthorde.txt");
-            using (var fileStream = File.OpenRead(path))
-            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, buffersize))
-            {
-                string line;
-                int result;
-                int cnt = 0;
-                while ((line = streamReader.ReadLine()) != null || cnt < 2)
-                {
-                    if (int.TryParse(line, out result))
-                    {
-                        values[cnt] = result;
-                        cnt++;
-                    }
-
-                }
-            }
-            Log.Warning(" Loading Patch: " + this.GetType().ToString());
-			var harmony = new Harmony("scoutsmodpatch");
-			harmony.PatchAll();
-        }
+        Log.Out(" Loading Patch: " + GetType().ToString());
+        var harmony = new Harmony("scoutsmodpatch");
+        harmony.PatchAll();
     }
 
     [HarmonyPatch(typeof(AIDirectorChunkEventComponent))]
     [HarmonyPatch("checkHordeLevel")]
-
     public static class scoutsmodprob
     {
-        static float myrandomfloat(GameRandom __instance)
+        private static float myrandomfloat(GameRandom __instance)
         {
-            return 0;
+            return 0f;
         }
-        static bool myplaytesting()
+
+        private static bool myplaytesting()
         {
             return false;
         }
+
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
-            Log.Warning("@1");
-            var method = AccessTools.Method(typeof(GameUtils), "IsPlaytesting");
-            var fmethod = AccessTools.Method(typeof(scoutsmodprob), "myplaytesting");
-            var method2 = AccessTools.PropertyGetter(typeof(GameRandom), "RandomFloat");
-            var fmethod2 = AccessTools.Method(typeof(scoutsmodprob), "myrandomfloat");
-            instr = Transpilers.MethodReplacer(instr, method, fmethod);
-            instr = Transpilers.MethodReplacer(instr, method2, fmethod2);
+            Log.Out("@1");
+            MethodInfo methodInfo = AccessTools.Method(typeof(GameUtils), "IsPlaytesting", null, null);
+            MethodInfo methodInfo2 = AccessTools.Method(typeof(mythixscoutsmod.scoutsmodprob), "myplaytesting", null, null);
+            MethodInfo methodInfo3 = AccessTools.PropertyGetter(typeof(GameRandom), "RandomFloat");
+            MethodInfo methodInfo4 = AccessTools.Method(typeof(mythixscoutsmod.scoutsmodprob), "myrandomfloat", null, null);
+            instr = Transpilers.MethodReplacer(instr, methodInfo, methodInfo2);
+            instr = Transpilers.MethodReplacer(instr, methodInfo3, methodInfo4);
             return instr;
         }
     }
+
     [HarmonyPatch(typeof(AIScoutHordeSpawner))]
     [HarmonyPatch("spawnHordeNear")]
     public static class scoutsrandomnumber
     {
-
         public static int randomNumber()
         {
-            return UnityEngine.Random.Range(values[0], values[1]);
+            int SHZombiesMin = int.Parse(SHConfig.GetPropertyValue("SHConfigLoad", "SHZombiesMin"));
+            int SHZombiesMax = int.Parse(SHConfig.GetPropertyValue("SHConfigLoad", "SHZombiesMax"));
+            int random = UnityEngine.Random.Range(SHZombiesMin, SHZombiesMax);
+            Log.Out($"Min: {SHZombiesMin} Max: {SHZombiesMax} Random: {random}");
+            return random;
         }
+
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
             Debug.Log("Scoutsmod patch 2");
-            var list = new List<CodeInstruction>(instr);
-
+            List<CodeInstruction> list = new List<CodeInstruction>(instr);
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].opcode == OpCodes.Ldc_I4_5)
+                bool flag = list[i].opcode == OpCodes.Ldc_I4_5;
+                if (flag)
                 {
                     Debug.Log("Patching...");
                     list[i].opcode = OpCodes.Call;
-                    list[i].operand = AccessTools.Method(typeof(scoutsrandomnumber), "randomNumber");
+                    list[i].operand = AccessTools.Method(typeof(mythixscoutsmod.scoutsrandomnumber), "randomNumber", null, null);
                     Debug.Log("Patch done");
                     break;
                 }
             }
-            return list.AsEnumerable();
+            return list.AsEnumerable<CodeInstruction>();
         }
     }
-
 }
