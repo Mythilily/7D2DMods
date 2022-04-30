@@ -1,5 +1,4 @@
-using DMT;
-using Harmony;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +7,16 @@ using System.Reflection.Emit;
 using UnityEngine;
 
 
-class Mythix_WanderingHordesGSpatch
+class Mythix_WanderingHordesGSpatch : IModApi
 {
-    public class WanderingHordesGSpatch : IHarmony
+    public void InitMod(Mod _modInstance)
     {
-        public void Start()
-        {
-            Debug.Log(" Loading Patch: " + GetType().ToString());
-            var harmony = HarmonyInstance.Create(GetType().ToString());
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
-        }
-        [HarmonyPatch(typeof(AIWanderingHordeSpawner), MethodType.Constructor)]
-        [HarmonyPatch(new Type[]
+        Log.Out(" Loading Patch: " + GetType().ToString());
+        var harmony = new Harmony("wanderingGS");
+        harmony.PatchAll();
+    }
+    [HarmonyPatch(typeof(AIWanderingHordeSpawner), MethodType.Constructor)]
+    [HarmonyPatch(new Type[]
     {
             typeof(World),
             typeof(AIWanderingHordeSpawner.HordeArrivedDelegate),
@@ -32,25 +29,24 @@ class Mythix_WanderingHordesGSpatch
             typeof(int),
             typeof(bool)
     })]
-        class WHPatch
+    class WHPatch
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                var list = new List<CodeInstruction>(instructions);
+            var list = new List<CodeInstruction>(instructions);
 
-                for (int i = 0; i < list.Count; i++)
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].opcode == OpCodes.Ldc_I4_S && (sbyte)list[i].operand == 0x32)
                 {
-                    if (list[i].opcode == OpCodes.Ldc_I4_S && (sbyte)list[i].operand == 0x32)
-                    {
-                        Debug.Log("Patching...");
-                        list[i].opcode = OpCodes.Ldc_I4;
-                        list[i].operand = 0x1388;
-                        Debug.Log("Patch done");
-                        break;
-                    }
+                    Debug.Log("Patching...");
+                    list[i].opcode = OpCodes.Ldc_I4;
+                    list[i].operand = 0x1388;
+                    Debug.Log("Patch done");
+                    break;
                 }
-                return list.AsEnumerable();
             }
+            return list.AsEnumerable();
         }
     }
 }

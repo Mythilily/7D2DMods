@@ -1,10 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <xml>
-	<ModInfo>
-		<Name value="WanderingHordeGSpatch" />
-		<Description value="WanderingHordeGSpatch" />
-		<Author value="mythix" />
-		<Version value="1.0" />
-		<Website value="" />
-	</ModInfo>
+  <ModInfo>
+    <Name value="WanderingHordeGSpatch" />
+    <Description value="WanderingHordeGSpatch" />
+    <Author value="mythix" />
+    <Version value="1.1" />
+    <Website value="" />
+  </ModInfo>
+  <DMT>
+    <dependencies />
+    <conflicts />
+  </DMT>
 </xml>

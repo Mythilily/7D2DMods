@@ -1,0 +1,14 @@
+<configs>
+    <append xpath="//entity_class[@name='playerMale']">
+        <effect_group name="Skill cvars">
+            <triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" target="self" cvar="cvarunique" operation="set" value="1"/>
+            <triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" target="self" cvar="cvararmor" operation="set" value="1"/>
+            <triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" target="self" cvar="cvargun" operation="set" value="1"/>
+            <triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" target="self" cvar="cvartool" operation="set" value="1"/>
+            <triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" target="self" cvar="cvarweapon" operation="set" value="11"/>
+            <triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" target="self" cvar="cvarturret" operation="set" value="1"/>
+            <triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" target="self" cvar="cvarlaser" operation="set" value="1"/>
+            <triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" target="self" cvar="cvarscience" operation="set" value="1"/>
+        </effect_group>
+    </append>
+</configs>
