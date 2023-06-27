@@ -1,0 +1,14 @@
+<configs>
+	<append xpath="/blocks">
+  		<block name="WHferalConfigBlock">
+			<property name="Extends" value="terrDesertGround"/>
+			<property class="WHferalConfigLoad">
+				<property name="Logging" value="false"/>
+				<!-- Aggressive: Send horde straight to the players location on spawn. -->
+				<property name="Aggressive" value="false" />
+				<!-- Chaotic: Spawns horde very close or possibly on top of player -->
+				<property name="Chaotic" value="false" />
+			</property>
+		</block>
+	</append>
+</configs>
