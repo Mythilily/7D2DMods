@@ -18,16 +18,14 @@ class Mythix_WanderingHordesGSpatch : IModApi
     [HarmonyPatch(typeof(AIWanderingHordeSpawner), MethodType.Constructor)]
     [HarmonyPatch(new Type[]
     {
-            typeof(World),
+            typeof(AIDirector),
+            typeof(AIWanderingHordeSpawner.SpawnType),
             typeof(AIWanderingHordeSpawner.HordeArrivedDelegate),
             typeof(List<AIDirectorPlayerState>),
-            typeof(int),
             typeof(ulong),
             typeof(Vector3),
             typeof(Vector3),
-            typeof(Vector3),
-            typeof(int),
-            typeof(bool)
+            typeof(Vector3)
     })]
     class WHPatch
     {
@@ -39,10 +37,9 @@ class Mythix_WanderingHordesGSpatch : IModApi
             {
                 if (list[i].opcode == OpCodes.Ldc_I4_S && (sbyte)list[i].operand == 0x32)
                 {
-                    Debug.Log("Patching...");
                     list[i].opcode = OpCodes.Ldc_I4;
-                    list[i].operand = 0x1388;
-                    Debug.Log("Patch done");
+                    list[i].operand = 9999;
+                    Log.Out("Patched WH gamestage cap");
                     break;
                 }
             }
