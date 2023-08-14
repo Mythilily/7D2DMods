@@ -1,10 +1,15 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <xml>
-  <ModInfo>
-    <Name value="ScoutsMod" />
-    <Description value="" />
-    <Author value="mythix" />
-    <Version value="1.0" />
-    <Website value="" />
-  </ModInfo>
+	<Name value="Scoutsmod" />
+	<!-- (Required) Internal name, like an ID, of the mod. Should be globally unique, like an author prefix + name. Only allowed chars: Numbers, latin letters, underscores, dash -->
+	<DisplayName value="Scoutsmod" />
+	<!-- (Required) Name used for display purposes, like shown in the mods UI at some point. Could be the same as you would later on use on workshop or wherever mods get distributed -->
+	<Version value="1.1" />
+	<!-- (Required) SemVer version of the mod. Has to be in the format major.minor[.build[.revision]] (i.e. build and revision can be left out, recommend using them though as typically done with Semantic Versioning -->
+	<Description value="Makes scout hordes spawn consistent and randomizes the preconfigured range" />
+	<!-- (Optional) More text to show on UIs -->
+	<Author value="Mythix" />
+	<!-- (Optional) Name(s) of the author(s) -->
+	<Website value="" />
+	<!-- (Optional) URL of a website of the mod -->
 </xml>
