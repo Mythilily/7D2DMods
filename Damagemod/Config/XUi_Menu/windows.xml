@@ -1,0 +1,8 @@
+﻿<configs>
+	<!-- Game Options-->
+	<set xpath="//rect[@tab_key='xuiDF']/@tab_key">xuiCustomGameOptions</set>
+	<remove xpath="//gameoption[starts-with(@title, 'goCustom')]"/>
+	<append xpath="//rect[@tab_key='xuiCustomGameOptions']/grid">
+		<gameoption name="CustomDamageMultiplier" title="goDamageMultiplier" value_wrap="false" value_type="string" values="0.5,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.5,4,5" display_names="" value_localization_prefix="x" default_value="1"/>
+	</append>
+</configs>

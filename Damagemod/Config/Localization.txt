@@ -1,0 +1,4 @@
+Key,english
+xuiCustomGameOptions,Custom Options,,,,,
+goDamageMultiplier,Damage received,,,,,
+goDamageMultiplierDesc,"Vanilla damage values:\n\n1. Nomad: x1\n2. Warrior: x1.5\n3. Survivalist: x2\n4. Insane: x2.5"
